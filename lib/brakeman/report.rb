@@ -6,7 +6,7 @@ require 'brakeman/report/report_base'
 class Brakeman::Report
   attr_reader :tracker
 
-  VALID_FORMATS = [:to_html, :to_pdf, :to_csv, :to_json, :to_tabs, :to_hash, :to_s, :to_markdown, :to_codeclimate, :to_plain, :to_text, :to_junit]
+  VALID_FORMATS = [:to_html, :to_pdf, :to_csv, :to_json, :to_tabs, :to_hash, :to_s, :to_markdown, :to_codeclimate, :to_plain, :to_text, :to_junit, :to_github]
 
   def initialize tracker
     @app_tree = tracker.app_tree
@@ -24,6 +24,9 @@ class Brakeman::Report
     when :to_html
       require_report 'html'
       Brakeman::Report::HTML
+    when :to_github
+      require_report 'github'
+      Brakeman::Report::Github
     when :to_json
       return self.to_json
     when :to_tabs
@@ -98,6 +101,11 @@ class Brakeman::Report
   def to_sarif
     require_report 'sarif'
     generate Brakeman::Report::SARIF
+  end
+
+  def to_github
+    require_report 'github'
+    generate Brakeman::Report::Github
   end
 
   def generate reporter
